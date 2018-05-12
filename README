@@ -1,0 +1,8 @@
+An ANSI bottom-up AVL tree implementation
+
+TODO
+* use top-down manner
+* give a simple usage example in README
+* write a reasonable Makefile
+* (test) use valgrind to detect memleak
+
