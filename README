@@ -1,5 +1,7 @@
 An ANSI bottom-up AVL tree implementation
 
+Since its bottom-up property  the insertion/deletion speed in proportion to the tree size, which should be slow
+
 TODO
 * use top-down manner
 * give a simple usage example in README
