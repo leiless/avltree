@@ -5,4 +5,5 @@ TODO
 * give a simple usage example in README
 * write a reasonable Makefile
 * (test) use valgrind to detect memleak
+* use src/test directory hierarchy
 

@@ -56,8 +56,6 @@ void test2(void)
         return;
     }
 
-    loselose_srand();
-
     size_t i;
     int val;
 
@@ -116,17 +114,95 @@ void test2(void)
     assert(t == NULL);
 }
 
+static char *randstr(size_t len)
+{
+    if (len == 0)   return NULL;
+    char *p = malloc(sizeof(char) * len);
+    if (p == NULL)  return NULL;
+
+    size_t i;
+    for (i = 0; i < len-1; i++) {
+        if (rand() % 2) {
+            p[i] = 'a' + rand() % ('z' - 'a' + 1);
+        } else {
+            p[i] = '0' + rand() % ('9' - '0' + 1);
+        }
+    }
+    p[len-1] = '\0';
+    return p;
+}
+
 void test3(void)
 {
     fprintf(stderr, "%s\n", __func__);
 
-    /*
-     * TODO: using char * as tree value
-     */
+    avltree_t *t = avltree_alloc();
+    if (t == NULL) {
+        perror("avltree_alloc fail");
+        return;
+    }
+
+#define TEST_SIZE3 10000
+#define RAND_RANGE3 8
+
+    size_t i;
+    size_t len;
+    char *str;
+
+    size_t ok = 0;
+    size_t exist = 0;
+    size_t nomem = 0;
+
+    for (i = 0; i < TEST_SIZE3; i++) {
+        len = 1 + rand() % RAND_RANGE3;
+        str = randstr(len);
+        if (str == NULL) {
+            nomem++;
+            continue;
+        }
+
+        switch (avltree_insert(t, (unsigned char *) str, len)) {
+        case 0:
+            ok++;
+            break;
+        case EEXIST:
+            exist++;
+            break;
+        case ENOMEM:
+            nomem++;
+            break;
+        default:
+            assert(((void) "Unswitched return value", 0));
+            break;
+        }
+    }
+
+    fprintf(stderr, "OK: %zu EXIST: %zu NOMEM: %zu\n", ok, exist, nomem);
+
+    size_t del = 0;
+    for (i = 0; i < TEST_SIZE3 * 4; i++) {
+        len = 1 + rand() % RAND_RANGE3;
+        str = randstr(len);
+        if (str == NULL) continue;
+
+        del += !avltree_delete(t, (unsigned char *) str, len);
+    }
+
+    fprintf(stderr, "DELETED: %zu\n", del);
+    fprintf(stderr, "Current tree size: %u\n", avltree_getsize(t));
+
+#if 0
+    avltree_show(t);
+#endif
+
+    avltree_free(&t);
+    assert(t == NULL);
 }
 
 int main(void)
 {
+    loselose_srand();
+
     test1();
     test2();
     test3();

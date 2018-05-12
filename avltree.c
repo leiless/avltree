@@ -398,7 +398,7 @@ out_reshow:
     if (n->lchild)
         avltree_show_recur(n->lchild);
 
-    printf("%.*s ", (int) n->size, n->data);
+    printf("%.*s\n", (int) n->size, n->data);
 
     n = n->rchild;
     goto out_reshow;
